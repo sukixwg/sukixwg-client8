@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suki Store</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;family=Teko:wght@600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-base: #050505;
+            --glass-bg: rgba(25, 25, 25, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --accent-gold: #D4AF37;
+            --text-primary: #F3F3F3;
+            --text-secondary: #A0A0A0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @font-face {
+            font-family: 'Termit';
+            src: local('Termit'), local('Teko-Bold'), url('https://fonts.gstatic.com/s/teko/v21/LYjd3_4AnmsP3p9_A8k.woff2') format('woff2');
+        }
+
+        .startup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #06080d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 9999;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .dialog-overlay {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .dialog-box {
+            background: #0d111a;
+            border-radius: 24px;
+            padding: 22px;
+            border: 1px solid #1c2433;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .dialog-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 10px;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .brand-title {
+            font-family: 'Termit', 'Teko', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .badge-more {
+            background: #161c28;
+            border: 1px solid #263145;
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .content-list {
+            list-style: none;
+            color: #d1d5db;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 22px;
+            padding-left: 4px;
+        }
+
+        .content-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .content-list li::before {
+            content: '•';
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .dialog-footer {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-close {
+            background: #232a3b;
+            color: #ffffff;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-join {
+            background: linear-gradient(135deg, #5b50f6 0%, #2b6bf3 100%);
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .bg-orb-1, .bg-orb-2 {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        
+        .bg-orb-1 {
+            width: 250px;
+            height: 250px;
+            background: rgba(212, 175, 55, 0.15);
+            top: -80px;
+            left: -80px;
+        }
+        
+        .bg-orb-2 {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            bottom: 150px;
+            right: -40px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            background: transparent;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .header {
+            padding: 4px 16px 14px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 100px;
+            gap: 10px;
+        }
+        
+        .search-bar i {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 0.85rem;
+        }
+        
+        .search-bar input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .carousel-section {
+            padding: 14px 16px 8px;
+        }
+        
+        .carousel-wrapper {
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1080 / 350;
+        }
+        
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-profile-section {
+            padding: 0 16px 14px;
+        }
+        
+        .info-profile-wrapper {
+            padding: 12px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .mini-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Roboto', sans-serif;
+            padding-left: 2px;
+        }
+        
+        .mini-profile-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .mini-profile-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .mini-profile-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        
+        .mini-profile-desc {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin-top: 1px;
+            font-weight: 400;
+        }
+
+        .catalog-header {
+            padding: 0 16px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .catalog-header h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        
+        .product-grid {
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .product-card {
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, border 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .product-card:active {
+            transform: scale(0.95);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .product-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #111;
+        }
+        
+        .product-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover .product-img-wrapper img {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .product-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #eee;
+        }
+        
+        .product-price {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-top: 2px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        
+        .btn-action-cart, .btn-action-buy {
+            border: none;
+            outline: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        
+        .btn-action-cart {
+            width: 26px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .btn-action-cart:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-action-cart:active {
+            transform: scale(0.92);
+        }
+        
+        .btn-action-buy {
+            flex: 1;
+            height: 24px;
+            background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
+            color: #050505;
+            letter-spacing: 0.2px;
+        }
+        
+        .btn-action-buy:hover {
+            filter: brightness(1.1);
+        }
+        
+        .btn-action-buy:active {
+            transform: scale(0.92);
+        }
+
+        .cart-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            text-align: left;
+        }
+        
+        .cart-item img {
+            width: 52px;
+            height: 52px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #eee;
+            margin-bottom: 2px;
+        }
+        
+        .cart-item-price {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+        
+        .btn-remove-cart {
+            background: transparent;
+            border: none;
+            color: #ff5555;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 6px;
+        }
+        
+        .cart-checkout-btn {
+            display: none;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%);
+            color: #050505;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border-radius: 10px;
+            margin-top: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .skeleton::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0,
+                rgba(255, 255, 255, 0.08) 20%,
+                rgba(255, 255, 255, 0.15) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 1.8s infinite;
+        }
+        
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        .skel-img { aspect-ratio: 1/1; width: 100%; }
+        .skel-line { height: 10px; width: 80%; border-radius: 4px; margin-top: 8px; margin-left: 6px; }
+        .skel-line.short { width: 50%; margin-top: 6px; margin-bottom: 8px; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 398px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 8px;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .nav-item:active {
+            transform: scale(0.9);
+        }
+        
+        .nav-item.active {
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active i {
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+        
+        .nav-item i {
+            font-size: 1.15rem;
+        }
+        
+        .nav-item span {
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+        
+        .page-content {
+            display: none;
+            padding: 16px;
+            text-align: center;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
+        
+        .page-content h2 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+        }
+
+        #homePage {
+            display: block;
+            padding: 0;
+            text-align: left;
+        }
+
+        .action-cards {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 14px;
+        }
+        
+        .action-card {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #F3F3F3;
+            gap: 10px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .card-saluran {
+            background: #11785f;
+        }
+        
+        .card-admin {
+            background: #254cc9;
+        }
+        
+        .action-icon {
+            font-size: 1.2rem;
+        }
+        
+        .action-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .action-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .action-sub {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+        
+        .info-card {
+            background: rgba(25, 25, 25, 0.45);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-width: 0;
+        }
+        
+        .info-card-red {
+            border-top: 2px solid rgba(255, 71, 87, 0.6);
+        }
+        
+        .info-card-blue {
+            border-top: 2px solid rgba(74, 105, 189, 0.6);
+        }
+        
+        .info-card-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .icon-red {
+            border: 1px solid rgba(255, 71, 87, 0.5);
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.08);
+        }
+        
+        .icon-blue {
+            border: 1px solid rgba(74, 105, 189, 0.5);
+            color: #4a69bd;
+            background: rgba(74, 105, 189, 0.08);
+        }
+        
+        .info-card-label {
+            font-size: 0.55rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .info-card-value {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .text-green {
+            color: #2ed573;
+        }
+
+        .voucher-card {
+            display: flex;
+            align-items: center;
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 12px;
+            padding: 18px 16px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .voucher-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff7b00, #d4af37, #00d2ff);
+        }
+        
+        .vc-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .vc-icon-wrapper i {
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+        }
+        
+        .vc-info {
+            text-align: left;
+            flex: 1;
+        }
+        
+        .vc-title {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
+        }
+        
+        .vc-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .voucher-search-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .voucher-search-bar input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+            font-family: inherit;
+        }
+        
+        .voucher-search-bar input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .btn-voucher-search {
+            background: linear-gradient(135deg, #2ed573 0%, #21a858 100%);
+            color: #050505;
+            border: none;
+            border-radius: 8px;
+            padding: 0 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: inherit;
+        }
+        
+        .btn-voucher-search:active {
+            transform: scale(0.95);
+        }
+        
+        .voucher-message {
+            font-size: 0.8rem;
+            text-align: left;
+            margin-top: 4px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+        
+        .text-success { color: #2ed573; }
+        .text-error { color: #ff4757; }
+        
+        .share-api-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
+        }
+        
+        .share-api-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .share-api-btn i {
+            font-size: 1.2rem;
+        }
+    </style>
+<style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style></head>
+<body>
+
+    <div id="startupDialogOverlay" class="startup-overlay" style="display: none;">
+        <div class="dialog-overlay">
+            <div class="dialog-box">
+                <div class="dialog-header">
+                    <div class="profile-section">
+                        <img src="https://i.ibb.co.com/wFKrf0dG/20260929-000923.png" alt="Profile" class="profile-img">
+                        <span class="brand-title">Wg Mods</span>
+                    </div>
+                    <a href="#" class="badge-more">More Apps</a>
+                </div>
+                
+                <ul class="content-list">
+                    <li>follow atau dihitamkan</li>
+                    <li>wangsaf gaming yt</li>
+                    <li>tiktok @cwuhuy</li>
+                </ul>
+                
+                <div class="dialog-footer">
+                    <button class="btn btn-close" disabled="" onclick="return false;">Close</button>
+                    <a href="https://whatsapp.com/channel/0029Vb6t3YqIXnluSByJvh1g" target="_blank" class="btn btn-join" onclick="handleJoin()">Join Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
+
+    <div class="app-container">
+        <div id="homePage" class="page-content active">
+            <section class="carousel-section">
+                <div class="carousel-wrapper glass-panel">
+                    <div class="carousel-track" id="carouselTrack" style="transition: none; transform: translateX(0px);">
+                        <div class="carousel-slide">
+                            <img src="https://i.ibb.co.com/sJ3nGj4q/20260928-223426.png" alt="Promo 1">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://i.ibb.co.com/TBQdxfRk/20260928-223736.png" alt="Promo 2">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://i.ibb.co.com/WLnbpp1/20260928-223344.png" alt="Promo 3">
+                        </div>
+                    <div class="carousel-slide">
+                            <img src="https://i.ibb.co.com/sJ3nGj4q/20260928-223426.png" alt="Promo 1">
+                        </div></div>
+                </div>
+            </section>
+
+            <div class="info-profile-section">
+                <div class="info-profile-wrapper glass-panel">
+                    <div class="mini-profile">
+                        <img src="https://i.ibb.co.com/SD4SQ3kN/IMG-20260930-WA0031.jpg" alt="Profile SukiX" class="mini-profile-img">
+                        <div class="mini-profile-info">
+                            <div class="mini-profile-name" style="display: flex; align-items: center; gap: 8px;">
+                                Jhasen str
+                                <a href="https://wa.me/6281930244528" style="color: #ff4757; font-size: 0.65rem; text-decoration: none; border: 1px solid rgba(255, 71, 87, 0.5); padding: 2px 8px; border-radius: 6px; background: rgba(255, 71, 87, 0.1);">Laporkan</a>
+                            </div>
+                            <div class="mini-profile-desc">pwa: progressive website app</div>
+                        </div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-card info-card-red">
+                            <div class="info-card-icon icon-red">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="info-card-label">Pembuat APK</div>
+                            <div class="info-card-value">Suki</div>
+                        </div>
+                        
+                        <div class="info-card info-card-red">
+                            <div class="info-card-icon icon-red">
+                                <i class="fa-solid fa-user-tag"></i>
+                            </div>
+                            <div class="info-card-label">Penjual</div>
+                            <div class="info-card-value">Jhasen store</div>
+                        </div>
+                        
+                        <div class="info-card info-card-red">
+                            <div class="info-card-icon icon-red">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div class="info-card-label">Payment</div>
+                            <div class="info-card-value">e-wallet</div>
+                        </div>
+                        
+                        <div class="info-card info-card-blue">
+                            <div class="info-card-icon icon-blue">
+                                <i class="fa-solid fa-store"></i>
+                            </div>
+                            <div class="info-card-label">Jhasen</div>
+                            <div class="info-card-value">penjual</div>
+                        </div>
+                        
+                        <div class="info-card info-card-blue">
+                            <div class="info-card-icon icon-blue">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </div>
+                            <div class="info-card-label">Tiktok</div>
+                            <div class="info-card-value text-green">pencita.ultraman</div>
+                        </div>
+                        
+                        <div class="info-card info-card-blue">
+                            <div class="info-card-icon icon-blue">
+                                <i class="fa-brands fa-youtube"></i>
+                            </div>
+                            <div class="info-card-label">YT</div>
+                            <div class="info-card-value text-green">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-cards">
+                <a href="https://chat.whatsapp.com/D3580Oi9Q29AyNtSov9JEx?s=cl&amp;p=a&amp;mlu=4&amp;ilr=4" target="_blank" class="action-card card-saluran">
+                    <i class="fa-brands fa-whatsapp action-icon"></i>
+                    <div class="action-text">
+                        <span class="action-title">Follow Saluran</span>
+                        <span class="action-sub">Harus</span>
+                    </div>
+                </a>
+                <a href="https://wa.me/6283170982730" target="_blank" class="action-card card-admin">
+                    <i class="fa-solid fa-headset action-icon"></i>
+                    <div class="action-text">
+                        <span class="action-title">Chat Admin</span>
+                        <span class="action-sub">Buy</span>
+                    </div>
+                </a>
+            </div>
+
+            <header class="header">
+                <div class="search-bar glass-panel">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Cari produk eksklusif...">
+                </div>
+            </header>
+
+            <section class="product-grid" id="productGrid">
+                <div class="product-card glass-panel skel-card" style="display: none;">
+                    <div class="skeleton skel-img"></div>
+                    <div class="skeleton skel-line"></div>
+                    <div class="skeleton skel-line short"></div>
+                </div>
+                <div class="product-card glass-panel skel-card" style="display: none;">
+                    <div class="skeleton skel-img"></div>
+                    <div class="skeleton skel-line"></div>
+                    <div class="skeleton skel-line short"></div>
+                </div>
+                <div class="product-card glass-panel skel-card" style="display: none;">
+                    <div class="skeleton skel-img"></div>
+                    <div class="skeleton skel-line"></div>
+                    <div class="skeleton skel-line short"></div>
+                </div>
+                
+                <div class="product-card glass-panel real-product" style="display: flex; animation: 0.6s ease 0s 1 normal forwards running fadeIn;">
+                    <div class="product-img-wrapper">
+                        <img src="https://i.ibb.co.com/SD4SQ3kN/IMG-20260930-WA0031.jpg" alt="Jhasen store" class="">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">logo gratis by Suki</h3>
+                        <p class="product-price">Harga? Pm</p>
+                        <div class="product-actions">
+                            <button class="btn-action-cart" title="Tambah ke Keranjang" onclick="addToCart('logo gratis by Suki', 'Rp 0', 'https://i.ibb.co.com/RTNPFQj4/20260928-161507.png', 'https://wa.me/p/28495151180151524/6281930244528')"><i class="fa-solid fa-cart-shopping"></i></button>
+                            <a href="https://wa.me/6283170982730" target="_blank" class="btn-action-buy">Beli</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card glass-panel real-product" style="display: flex; animation: 0.6s ease 0s 1 normal forwards running fadeIn;">
+                    <div class="product-img-wrapper">
+                        <img src="https://i.ibb.co.com/SD4SQ3kN/IMG-20260930-WA0031.jpg" alt="Jhasen store" class="">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Pembuatan website gratis</h3>
+                        <p class="product-price">Harga? Pm</p>
+                        <div class="product-actions">
+                            <button class="btn-action-cart" title="Tambah ke Keranjang" onclick="addToCart('Pembuatan website gratis', 'Rp 0', 'https://i.ibb.co.com/m5KYV0fw/20260928-161440.png', 'https://wa.me/p/28495151180151524/6281930244528')"><i class="fa-solid fa-cart-shopping"></i></button>
+                            <a href="https://wa.me/6283170982730" target="_blank" class="btn-action-buy">Beli</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card glass-panel real-product" style="display: flex; animation: 0.6s ease 0s 1 normal forwards running fadeIn;">
+                    <div class="product-img-wrapper">
+                        <img src="https://i.ibb.co.com/SD4SQ3kN/IMG-20260930-WA0031.jpg" alt="Jhasen store" class="">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Pembuatan aplikasi gratis</h3>
+                        <p class="product-price">Harga? Pm</p>
+                        <div class="product-actions">
+                            <button class="btn-action-cart" title="Tambah ke Keranjang" onclick="addToCart('Pembuatan aplikasi gratis', 'Rp 0', 'https://i.ibb.co.com/zT4G4nmQ/20260928-161448.png', 'https://wa.me/p/28495151180151524/6281930244528')"><i class="fa-solid fa-cart-shopping"></i></button>
+                            <a href="https://wa.me/6283170982730" target="_blank" class="btn-action-buy">Beli</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div id="voucherPage" class="page-content glass-panel" style="margin: 16px; border-radius: 16px;">
+            <div class="voucher-card">
+                <div class="vc-icon-wrapper">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div class="vc-info">
+                    <div class="vc-title">VOUCER DISKON</div>
+                    <div id="vcPercentage" class="vc-value">? %</div>
+                </div>
+            </div>
+            
+            <div class="voucher-search-bar">
+                <input type="text" id="voucherInput" placeholder="Masukkan kode voucher">
+                <button onclick="applyVoucher()" class="btn-voucher-search"><i class="fa-solid fa-search"></i></button>
+            </div>
+            <div id="voucherMessage" class="voucher-message"></div>
+        </div>
+        
+        <div id="cartPage" class="page-content glass-panel" style="margin: 16px; border-radius: 16px;">
+            <h2>Cart</h2>
+            <p id="cartEmpty" style="font-size: 0.85rem; color: rgb(204, 204, 204); display: block;">Keranjang belanja Anda saat ini kosong.</p>
+            <div id="cartList" class="cart-list"></div>
+            <a id="cartCheckout" href="#" target="_blank" class="cart-checkout-btn" style="display: none;">Beli Sekarang via WhatsApp</a>
+        </div>
+        
+        <div id="profilePage" class="page-content glass-panel" style="margin: 16px; border-radius: 16px;">
+            <a href="https://wa.me/?text=https%3A%2F%2Fwww.mediafire.com%2Ffile%2Fhmrd9idh7l6sea2%2Fdill%2Bstr_1.apk%2Ffile" target="_blank" class="share-api-btn">
+                <i class="fa-brands fa-whatsapp"></i> Share API
+            </a>
+        </div>
+    </div>
+
+    <nav class="bottom-nav glass-panel">
+        <a class="nav-item active" onclick="switchPage('homePage', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a class="nav-item" onclick="switchPage('voucherPage', this)">
+            <i class="fa-solid fa-ticket"></i>
+            <span>Voucher</span>
+        </a>
+        <a class="nav-item" onclick="switchPage('cartPage', this)">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Cart</span>
+        </a>
+        <a class="nav-item" onclick="switchPage('profilePage', this)">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('startupDialogOverlay');
+            if(localStorage.getItem('dialogPassed') === 'true') {
+                overlay.style.display = 'none';
+            }
+        });
+
+        function handleJoin() {
+            const overlay = document.getElementById('startupDialogOverlay');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                localStorage.setItem('dialogPassed', 'true');
+            }, 3000);
+        }
+
+        const track = document.getElementById('carouselTrack');
+        const slides = Array.from(track.children);
+        const slideCount = slides.length;
+        
+        const firstClone = slides[0].cloneNode(true);
+        track.appendChild(firstClone);
+        
+        let currentIndex = 0;
+        let isTransitioning = false;
+
+        function moveToNextSlide() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            currentIndex++;
+            
+            track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        track.addEventListener('transitionend', () => {
+            isTransitioning = false;
+            if (currentIndex === slideCount) {
+                track.style.transition = 'none';
+                currentIndex = 0;
+                track.style.transform = `translateX(0)`;
+                void track.offsetWidth; 
+            }
+        });
+
+        setInterval(moveToNextSlide, 3500);
+
+        setTimeout(() => {
+            const skeletons = document.querySelectorAll('.skel-card');
+            const realProducts = document.querySelectorAll('.real-product');
+            
+            skeletons.forEach(skel => skel.style.display = 'none');
+            realProducts.forEach(prod => {
+                prod.style.display = 'flex';
+                prod.style.animation = 'fadeIn 0.6s ease forwards';
+            });
+            filterProducts();
+        }, 2000); 
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.real-product');
+            cards.forEach(card => {
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function switchPage(pageId, navElement) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+                page.style.display = 'none';
+            });
+            
+            const selectedPage = document.getElementById(pageId);
+            selectedPage.style.display = 'block';
+            setTimeout(() => {
+                selectedPage.classList.add('active');
+            }, 10);
+            
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            if (navElement) {
+                navElement.classList.add('active');
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        let cartItems = JSON.parse(localStorage.getItem('sukiCart')) || [];
+        renderCart();
+
+        function saveCart() {
+            localStorage.setItem('sukiCart', JSON.stringify(cartItems));
+        }
+
+        function addToCart(title, price, imgSrc, waLink) {
+            const existingIndex = cartItems.findIndex(item => item.title === title);
+            if (existingIndex > -1) {
+                cartItems[existingIndex].qty += 1;
+            } else {
+                cartItems.push({ title, price, imgSrc, waLink, qty: 1 });
+            }
+            saveCart();
+            renderCart();
+            switchPage('cartPage', document.querySelectorAll('.nav-item')[2]);
+        }
+
+        function removeFromCart(index) {
+            cartItems.splice(index, 1);
+            saveCart();
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartContainer = document.getElementById('cartList');
+            const cartEmpty = document.getElementById('cartEmpty');
+            const cartCheckout = document.getElementById('cartCheckout');
+            
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = '';
+                cartEmpty.style.display = 'block';
+                if (cartCheckout) cartCheckout.style.display = 'none';
+            } else {
+                cartEmpty.style.display = 'none';
+                let html = '';
+                cartItems.forEach((item, index) => {
+                    html += `<div class="cart-item"><img src="${item.imgSrc}" alt="${item.title}"><div class="cart-item-details"><div class="cart-item-title">${item.title}</div><div class="cart-item-price">${item.price} (x${item.qty})</div></div><button class="btn-remove-cart" onclick="removeFromCart(${index})"><i class="fa-solid fa-trash-can"></i></button></div>`;
+                });
+                cartContainer.innerHTML = html;
+                if (cartCheckout) {
+                    cartCheckout.style.display = 'block';
+                    cartCheckout.href = cartItems[0].waLink;
+                }
+            }
+        }
+
+        let savedVoucher = localStorage.getItem('sukiVoucher');
+        if (savedVoucher === 'diskonsuki226') {
+            document.getElementById('voucherInput').value = savedVoucher;
+            document.getElementById('vcPercentage').textContent = '5 %';
+            const msg = document.getElementById('voucherMessage');
+            msg.textContent = 'Voucher berhasil diterapkan! Anda mendapat diskon 5%.';
+            msg.className = 'voucher-message text-success';
+        }
+
+        function applyVoucher() {
+            const input = document.getElementById('voucherInput').value;
+            const msg = document.getElementById('voucherMessage');
+            const percentage = document.getElementById('vcPercentage');
+            
+            if(input === 'diskonsuki226') {
+                percentage.textContent = '5 %';
+                msg.textContent = 'Voucher berhasil diterapkan! Anda mendapat diskon 5%.';
+                msg.className = 'voucher-message text-success';
+                localStorage.setItem('sukiVoucher', input);
+            } else {
+                percentage.textContent = '? %';
+                msg.textContent = 'Kode voucher tidak valid.';
+                msg.className = 'voucher-message text-error';
+                localStorage.removeItem('sukiVoucher');
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
+
+</body></html>
